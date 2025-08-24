@@ -1,4 +1,3 @@
-```markdown
 # 🍴 Restaurant AI Chatbot
 
 An **AI-powered chatbot** for a restaurant website built with **Flask (Python backend)** and a **modern HTML/CSS/JavaScript frontend**.  
@@ -28,50 +27,6 @@ It helps users quickly get answers about:
 - **Backend**: Python, Flask, Flask-CORS  
 - **Frontend**: HTML, CSS, JavaScript  
 - **Design**: Custom CSS (chat bubbles, typing animation, suggestion chips)  
-
----
-
-## 📂 Project Structure
-
-```
-
-├── chatbot.html       # Frontend UI
-├── chatbot\_app.py     # Flask backend
-├── README.md          # Project documentation
-
-````
-
----
-
-## 🚀 Getting Started
-
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/your-username/restaurant-chatbot.git
-cd restaurant-chatbot
-````
-
-### 2️⃣ Install Dependencies
-
-```bash
-pip install flask flask-cors
-```
-
-### 3️⃣ Run the Flask Server
-
-```bash
-python chatbot_app.py
-```
-
-Server will run at:
-👉 `http://127.0.0.1:5000/chat`
-
-### 4️⃣ Open the Frontend
-
-* Open `chatbot.html` in your browser.
-* Start chatting with your AI assistant 🎉
-
----
 
 ## 💬 Example Conversations
 
