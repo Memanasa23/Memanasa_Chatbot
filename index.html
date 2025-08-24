@@ -203,6 +203,7 @@
             <button class="suggestion-chip" data-query="What are your timings?">Timings</button>
             <button class="suggestion-chip" data-query="Where are you located?">Locations</button>
             <button class="suggestion-chip" data-query="What is your famous dish?">Specialty</button>
+            <button class="suggestion-chip" data-query="How can I contact you?">Contact</button>
             <button class="suggestion-chip" data-query="What's on the menu?">Menu</button>
         </div>
         <div class="chat-input">
@@ -297,6 +298,8 @@
                     return "Here's our popular menu items with prices:\n\nBIRYANIS:\n- Chicken Biryani: ₹250\n- Mutton Biryani: ₹320\n- Veg Biryani: ₹180\n\nMAIN COURSE:\n- Butter Chicken: ₹280\n- Chicken Tikka Masala: ₹260\n- Paneer Butter Masala: ₹240\n\nBREADS:\n- Naan: ₹40\n- Butter Naan: ₹50\n- Tandoori Roti: ₹30";
                 } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
                     return "Hello! How can I help you today?";
+                } else if (message.includes('contact') || message.includes('Manager details') || message.includes('contact list')) {
+                    return "Here's you can contact to our Manager 1234567890";
                 } else if (message.includes('thank')) {
                     return "You're welcome! Is there anything else I can help with?";
                 } else {
