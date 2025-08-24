@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .chatbot-container {
+            width: 360px;
+            height: 600px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .chat-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .chat-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e0e0e0' fill-opacity='0.4' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+        
+        .bot-message {
+            justify-content: flex-start;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bot-message .message-content {
+            background-color: white;
+            border-top-left-radius: 5px;
+        }
+        
+        .user-message .message-content {
+            background-color: #dcf8c6;
+            border-top-right-radius: 5px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .chat-input button {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            color: white;
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 10px 15px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+        
+        .suggestion-chip {
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 16px;
+            padding: 8px 15px;
+            margin: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .suggestion-chip:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .timestamp {
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+            margin: 5px 0;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 10px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #bbb;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typing-animation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing-animation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="chat-header">
+            <h2>Restaurant Assistant</h2>
+            <p>Ask me about timings, locations, and menu!</p>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="timestamp" id="initial-timestamp">Today</div>
+            <div class="message bot-message">
+                <div class="message-content">
+                    Hi there! 👋 I'm here to help you with information about our restaurant. You can ask me about our timings, locations, or menu items!
+                </div>
+            </div>
+        </div>
+        <div class="suggestions">
+            <button class="suggestion-chip" data-query="What are your timings?">Timings</button>
+            <button class="suggestion-chip" data-query="Where are you located?">Locations</button>
+            <button class="suggestion-chip" data-query="What is your famous dish?">Specialty</button>
+            <button class="suggestion-chip" data-query="What's on the menu?">Menu</button>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message here...">
+            <button id="send-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            
+            // Function to add a message to the chat
+            function addMessage(content, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('message-content');
+                contentDiv.textContent = content;
+                
+                messageDiv.appendChild(contentDiv);
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Function to show typing indicator
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.classList.add('typing-indicator');
+                typingDiv.id = 'typing-indicator';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('typing-dot');
+                    typingDiv.appendChild(dot);
+                }
+                
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Function to hide typing indicator
+            function hideTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            // Function to handle sending a message
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    userInput.value = '';
+                    
+                    // Show typing indicator
+                    showTypingIndicator();
+                    
+                    // Send message to backend (simulated for now)
+                    setTimeout(() => {
+                        hideTypingIndicator();
+                        const response = getBotResponse(message);
+                        addMessage(response, false);
+                    }, 1000);
+                }
+            }
+            
+            // Function to simulate bot response (in a real scenario, this would call your backend API)
+            function getBotResponse(message) {
+                message = message.toLowerCase();
+                
+                if (message.includes('timing') || message.includes('time') || message.includes('hour')) {
+                    return "We're open from 11:00 AM to 11:00 PM every day. Our special buffet is available from 12:00 PM to 3:30 PM on weekends.";
+                } else if (message.includes('location') || message.includes('where') || message.includes('address')) {
+                    return "We have multiple locations in Hyderabad: \n1. Ameerpet: 123 Main Street \n2. Madhapur: 456 Tech Boulevard \n3. Banjara Hills: 789 Luxury Road";
+                } else if (message.includes('famous') || message.includes('special') || message.includes('recommend') || message.includes('dish')) {
+                    return "Our famous dish is Chicken Biryani (₹250). Other popular items include:\n- Mutton Biryani (₹320)\n- Veg Biryani (₹180)\n- Butter Chicken (₹280)\n- Tandoori Platter (₹350)";
+                } else if (message.includes('menu') || message.includes('item') || message.includes('price')) {
+                    return "Here's our popular menu items with prices:\n\nBIRYANIS:\n- Chicken Biryani: ₹250\n- Mutton Biryani: ₹320\n- Veg Biryani: ₹180\n\nMAIN COURSE:\n- Butter Chicken: ₹280\n- Chicken Tikka Masala: ₹260\n- Paneer Butter Masala: ₹240\n\nBREADS:\n- Naan: ₹40\n- Butter Naan: ₹50\n- Tandoori Roti: ₹30";
+                } else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                    return "Hello! How can I help you today?";
+                } else if (message.includes('thank')) {
+                    return "You're welcome! Is there anything else I can help with?";
+                } else {
+                    return "I'm sorry, I didn't understand that. You can ask me about our timings, locations, or menu items!";
+                }
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    userInput.value = this.getAttribute('data-query');
+                    sendMessage();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
